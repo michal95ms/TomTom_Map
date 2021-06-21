@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onMapLongClick(@NonNull LatLng latLng) {}
+    public void onMapLongClick(@NonNull LatLng latLng) {
+    }
 
     private void initTomTomServices() {
         Map<ApiKeyType, String> mapKeys = new HashMap<>();
@@ -63,7 +64,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.tomtomMap.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    private void initUIViews() {}
-    private void setupUIViewListeners() {}
+    private void initUIViews() {
+    }
+
+    private void setupUIViewListeners() {
+    }
 
 }
