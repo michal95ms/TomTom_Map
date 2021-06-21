@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
-
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }}
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -9,6 +13,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "MAPS_API_KEY", "\"rAT1nOItZYvJEr6XE6TpXQCkre6x4oQA\"")
+        buildConfigField("String", "ROUTING_API_KEY", "\"rAT1nOItZYvJEr6XE6TpXQCkre6x4oQA\"")
+        buildConfigField("String", "SEARCH_API_KEY", "\"rAT1nOItZYvJEr6XE6TpXQCkre6x4oQA\"")
+
     }
     buildTypes {
         release {
@@ -20,9 +28,15 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core:1.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
+    implementation 'androidx.media:media:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'com.tomtom.online:sdk-maps:2.4782'
+    implementation 'com.tomtom.online:sdk-routing:2.4782'
+    implementation 'com.tomtom.online:sdk-search:2.4782'
+    implementation 'com.tomtom.online:sdk-maps-ui-extensions:2.4782'
 }
+//rAT1nOItZYvJEr6XE6TpXQCkre6x4oQA
