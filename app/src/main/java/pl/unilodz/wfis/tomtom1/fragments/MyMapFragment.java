@@ -44,6 +44,8 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
     private LatLng wayPointPosition;
     private Icon departureIcon;
     private Icon destinationIcon;
+    private boolean init = true;
+    private boolean initLocation = true;
 
     public MyMapFragment() {
         super();
@@ -56,8 +58,12 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initTomTomServices(getContext());
-        getAsyncMap(this);
+        if(init) {
+            initTomTomServices(getContext());
+            getAsyncMap(this);
+            init = false;
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -73,12 +79,10 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
         this.tomtomMap.addOnMapLongClickListener(this);
         this.tomtomMap.getMarkerSettings().setMarkersClustering(true);
         this.tomtomMap.addLocationUpdateListener(location -> {
-            LatLng latLng = new LatLng(location);
-            tomtomMap.centerOn(CameraPosition.builder()
-                    .focusPosition(latLng)
-                    .zoom(MapConstants.DEFAULT_ZOOM_LEVEL)
-                    .bearing(MapConstants.ORIENTATION_NORTH)
-                    .build());
+           if(initLocation) {
+               initLocation = false;
+               tomtomMap.centerOnMyLocationWithNorthUp();
+           }
         });
 
     }

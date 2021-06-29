@@ -9,13 +9,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.tomtom.online.sdk.common.location.LatLng;
-import com.tomtom.online.sdk.map.Icon;
-import com.tomtom.online.sdk.map.OnMapReadyCallback;
-import com.tomtom.online.sdk.map.Route;
-import com.tomtom.online.sdk.map.TomtomMapCallback;
-import com.tomtom.online.sdk.routing.RoutingApi;
-import com.tomtom.online.sdk.search.SearchApi;
 
 import pl.unilodz.wfis.tomtom1.fragments.FavouriteFragment;
 import pl.unilodz.wfis.tomtom1.fragments.MyMapFragment;
@@ -44,7 +37,7 @@ public class MainActivity extends AppCompatActivity  {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment,
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new MyMapFragment()).commit();
         }
 
@@ -72,7 +65,7 @@ public class MainActivity extends AppCompatActivity  {
                                     Toast.LENGTH_LONG).show();
                             break;
                     }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment,
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
                     return true;
                 }
@@ -83,7 +76,7 @@ public class MainActivity extends AppCompatActivity  {
         myMapFragment = MyMapFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.map_fragment, myMapFragment)
+                .replace(R.id.fragment_container, myMapFragment)
                 .commit();
     }
 

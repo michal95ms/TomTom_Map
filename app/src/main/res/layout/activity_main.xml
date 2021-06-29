@@ -6,28 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <fragment
-        android:id="@+id/map_fragment"
-        android:name="com.tomtom.online.sdk.map.MapFragment"
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/top_navigation"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/top_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="-3dp"
+        android:layout_marginTop="-3dp"
+        android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
         app:itemBackground="@color/colorPrimary"
-        app:itemTextColor="@color/colorAccent"
         app:itemIconTint="@color/colorAccent"
-        app:menu="@menu/nav_menu"
-        />
+        app:itemTextColor="@color/colorAccent"
+        app:menu="@menu/nav_menu" />
 
 </RelativeLayout>
