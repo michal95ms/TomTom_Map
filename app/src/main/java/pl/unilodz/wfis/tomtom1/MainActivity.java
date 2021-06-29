@@ -2,6 +2,7 @@ package pl.unilodz.wfis.tomtom1;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,41 +18,38 @@ import com.tomtom.online.sdk.routing.RoutingApi;
 import com.tomtom.online.sdk.search.SearchApi;
 
 import pl.unilodz.wfis.tomtom1.fragments.FavouriteFragment;
+import pl.unilodz.wfis.tomtom1.fragments.MyMapFragment;
 import pl.unilodz.wfis.tomtom1.fragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity  {
 
-    private TomtomMap tomtomMap;
-    MapFragment mapFragment;
+    MyMapFragment myMapFragment;
     FavouriteFragment favouriteFragment;
     SearchFragment searchFragment;
-    RelativeLayout relativeLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mapFragment = new MapFragment();
-        favouriteFragment = new FavouriteFragment();
-        searchFragment = new SearchFragment();
-        relativeLayout = (RelativeLayout) findViewById(R.id.fragment_container);
 
-        initTomTomServices();
+        initMyMapFragment();
         initUIViews();
         setupUIViewListeners();
 
-/*
+
+
+
         BottomNavigationView bottomNavigationView= findViewById(R.id.top_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new MapFragment()).commit();
-        }*/
+            getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment,
+                    new MyMapFragment()).commit();
+        }
 
     }
-/*
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -59,61 +57,43 @@ public class MainActivity extends AppCompatActivity  {
                     Fragment selectedFragment = null;
                     switch (item.getItemId()) {
                         case R.id.ic_map:
-                            relativeLayout.setVisibility(View.INVISIBLE);
-                            selectedFragment = mapFragment;
+                            selectedFragment = myMapFragment;
+                            Toast.makeText(getBaseContext(), "Mapa",
+                                    Toast.LENGTH_LONG).show();
                             break;
                         case R.id.ic_favourite:
-                            relativeLayout.setVisibility(View.VISIBLE);
                             selectedFragment = favouriteFragment;
+                            Toast.makeText(getBaseContext(), "Favourite",
+                                    Toast.LENGTH_LONG).show();
                             break;
                         case R.id.ic_search:
-                            relativeLayout.setVisibility(View.VISIBLE);
                             selectedFragment = searchFragment;
+                            Toast.makeText(getBaseContext(), "Search",
+                                    Toast.LENGTH_LONG).show();
                             break;
                     }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    getSupportFragmentManager().beginTransaction().replace(R.id.map_fragment,
                             selectedFragment).commit();
                     return true;
                 }
             };
-*/
 
-    @Override
-    public void onMapReady(@NonNull final TomtomMap tomtomMap) {
-        this.tomtomMap = tomtomMap;
-        this.tomtomMap.setMyLocationEnabled(true);
-        this.tomtomMap.addOnMapLongClickListener(this);
-        this.tomtomMap.getMarkerSettings().setMarkersClustering(true);
-    }
 
-    @Override
-    public void onMapLongClick(@NonNull LatLng latLng) {
-    }
-
-    private void initTomTomServices() {
-        Map<ApiKeyType, String> mapKeys = new HashMap<>();
-        mapKeys.put(ApiKeyType.MAPS_API_KEY, "rAT1nOItZYvJEr6XE6TpXQCkre6x4oQA");
-
-        MapProperties mapProperties = new MapProperties.Builder()
-                .keys(mapKeys)
-                .build();
-        com.tomtom.online.sdk.map.MapFragment mapFragment = com.tomtom.online.sdk.map.MapFragment.newInstance(mapProperties);
+    private void initMyMapFragment() {
+        myMapFragment = MyMapFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.mapFragment, mapFragment)
+                .replace(R.id.map_fragment, myMapFragment)
                 .commit();
-        mapFragment.getAsyncMap(this);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        this.tomtomMap.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void initUIViews() {
+        favouriteFragment = new FavouriteFragment();
+        searchFragment = new SearchFragment();
     }
 
     private void setupUIViewListeners() {
     }
+
+
 }
