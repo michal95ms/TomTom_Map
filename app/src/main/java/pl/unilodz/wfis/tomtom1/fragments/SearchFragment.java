@@ -1,5 +1,7 @@
 package pl.unilodz.wfis.tomtom1.fragments;
 
+
+import pl.unilodz.wfis.tomtom1.adapters.LocationProvider;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,7 +13,23 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
+import com.tomtom.online.sdk.common.location.LatLng;
+import com.tomtom.online.sdk.common.location.LatLngBias;
+import com.tomtom.online.sdk.search.OnlineSearchApi;
+import com.tomtom.online.sdk.search.SearchApi;
+import com.tomtom.online.sdk.search.SearchException;
+import com.tomtom.online.sdk.search.extensions.SearchServiceManager;
+import com.tomtom.online.sdk.search.fuzzy.FuzzyLocationDescriptor;
+import com.tomtom.online.sdk.search.fuzzy.FuzzyOutcome;
+import com.tomtom.online.sdk.search.fuzzy.FuzzyOutcomeCallback;
+import com.tomtom.online.sdk.search.fuzzy.FuzzySearchDetails;
+import com.tomtom.online.sdk.search.fuzzy.FuzzySearchSpecification;
+
+import org.jetbrains.annotations.NotNull;
+
+import pl.unilodz.wfis.tomtom1.BuildConfig;
 import pl.unilodz.wfis.tomtom1.R;
 import pl.unilodz.wfis.tomtom1.adapters.SearchAdapter;
 
@@ -26,10 +44,10 @@ public class SearchFragment extends Fragment {
 
     private ListView listView;
     private SearchAdapter searchAdapter;
-    private String title[] = {"Title1", "Title2", "Title3", "Title4", "Title5"};
-    private String address[] = {"Address1", "Address2", "Address3", "Address4", "Address5"};
     private SearchView searchView;
     private Button showAllB;
+    private SearchApi searchApi;
+    private LocationProvider locationProvider;
     View view;
 
     public SearchFragment() {
@@ -58,21 +76,45 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view=inflater.inflate(R.layout.fragment_search,container,false);
+        view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        searchApi = OnlineSearchApi.create(getContext(), BuildConfig.SEARCH_API_KEY);
+        locationProvider= new LocationProvider(getContext());
+        locationProvider.activateLocationSource();
 
 
-
-        searchView= view.findViewById(R.id.searchViewSF);
-        listView= view.findViewById(R.id.search_list);
-        showAllB= view.findViewById(R.id.showAll);
-
-        searchAdapter = new SearchAdapter(getContext(), title, address);
-        listView.setAdapter(searchAdapter);
+        searchView = view.findViewById(R.id.searchViewSF);
+        listView = view.findViewById(R.id.search_list);
+        showAllB = view.findViewById(R.id.showAll);
 
         searchView.setQueryHint("what are you looking for");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+               // FuzzySearchSpecification fuzzySearchSpecification = new FuzzySearchSpecification.Builder(query).build();
+                FuzzySearchSpecification fuzzySearchSpecification = getSearchSpecificationForNonFuzzySearch(query,locationProvider.getLastKnownPosition());
+                searchApi.search(fuzzySearchSpecification, new FuzzyOutcomeCallback() {
+                    @Override
+                    public void onSuccess(@NotNull FuzzyOutcome fuzzyOutcome) {
+                        String name[]=new String[fuzzyOutcome.getFuzzyDetailsList().size()];
+                        String address[]=new String[fuzzyOutcome.getFuzzyDetailsList().size()];
+                        int i=0;
+                        for(FuzzySearchDetails details:fuzzyOutcome.getFuzzyDetailsList()){
+                            name[i]= details.getPoi().getName();
+                            address[i]= details.getAddress().getMunicipality();
+                            i++;
+                        }
+                        searchAdapter=new SearchAdapter(getContext(),name,address);
+                        listView.setAdapter(searchAdapter);
+
+                    }
+
+                    @Override
+                    public void onError(@NotNull SearchException e) {
+                        Toast.makeText(getContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                    }
+                });
                 return false;
             }
 
@@ -98,5 +140,17 @@ public class SearchFragment extends Fragment {
         });
 
         return view;
+    }
+
+    FuzzySearchSpecification getSearchSpecificationForNonFuzzySearch(String query, LatLng position) {
+        FuzzyLocationDescriptor fuzzyLocationDescriptor = new FuzzyLocationDescriptor.Builder()
+                .positionBias(new LatLngBias(position))
+                .build();
+        return
+                //tag::doc_create_standard_search_query[]
+                new FuzzySearchSpecification.Builder(query)
+                        .locationDescriptor(fuzzyLocationDescriptor)
+                        .build();
+        //end::doc_create_standard_search_query[]
     }
 }
