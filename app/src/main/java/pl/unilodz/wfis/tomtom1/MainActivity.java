@@ -2,33 +2,24 @@ package pl.unilodz.wfis.tomtom1;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tomtom.online.sdk.common.location.LatLng;
-import com.tomtom.online.sdk.map.ApiKeyType;
-import com.tomtom.online.sdk.map.MapFragment;
-import com.tomtom.online.sdk.map.MapProperties;
+import com.tomtom.online.sdk.map.Icon;
 import com.tomtom.online.sdk.map.OnMapReadyCallback;
-import com.tomtom.online.sdk.map.TomtomMap;
+import com.tomtom.online.sdk.map.Route;
 import com.tomtom.online.sdk.map.TomtomMapCallback;
-import com.tomtom.online.sdk.search.OnlineSearchApi;
+import com.tomtom.online.sdk.routing.RoutingApi;
 import com.tomtom.online.sdk.search.SearchApi;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import pl.unilodz.wfis.tomtom1.fragments.FavouriteFragment;
 import pl.unilodz.wfis.tomtom1.fragments.SearchFragment;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, TomtomMapCallback.OnMapLongClickListener {
+public class MainActivity extends AppCompatActivity  {
 
     private TomtomMap tomtomMap;
     MapFragment mapFragment;
