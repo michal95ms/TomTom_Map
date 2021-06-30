@@ -2,6 +2,7 @@ package pl.unilodz.wfis.tomtom1.fragments;
 
 
 import pl.unilodz.wfis.tomtom1.adapters.LocationProvider;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -79,7 +80,7 @@ public class SearchFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_search, container, false);
 
         searchApi = OnlineSearchApi.create(getContext(), BuildConfig.SEARCH_API_KEY);
-        locationProvider= new LocationProvider(getContext());
+        locationProvider = new LocationProvider(getContext());
         locationProvider.activateLocationSource();
 
 
@@ -92,27 +93,27 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-               // FuzzySearchSpecification fuzzySearchSpecification = new FuzzySearchSpecification.Builder(query).build();
-                FuzzySearchSpecification fuzzySearchSpecification = getSearchSpecificationForNonFuzzySearch(query,locationProvider.getLastKnownPosition());
+                // FuzzySearchSpecification fuzzySearchSpecification = new FuzzySearchSpecification.Builder(query).build();
+                FuzzySearchSpecification fuzzySearchSpecification = getSearchSpecificationForNonFuzzySearch(query, locationProvider.getLastKnownPosition());
                 searchApi.search(fuzzySearchSpecification, new FuzzyOutcomeCallback() {
                     @Override
                     public void onSuccess(@NotNull FuzzyOutcome fuzzyOutcome) {
-                        String name[]=new String[fuzzyOutcome.getFuzzyDetailsList().size()];
-                        String address[]=new String[fuzzyOutcome.getFuzzyDetailsList().size()];
-                        int i=0;
-                        for(FuzzySearchDetails details:fuzzyOutcome.getFuzzyDetailsList()){
-                            name[i]= details.getPoi().getName();
-                            address[i]= details.getAddress().getMunicipality();
+                        String name[] = new String[fuzzyOutcome.getFuzzyDetailsList().size()];
+                        String address[] = new String[fuzzyOutcome.getFuzzyDetailsList().size()];
+                        int i = 0;
+                        for (FuzzySearchDetails details : fuzzyOutcome.getFuzzyDetailsList()) {
+                            name[i] = details.getPoi().getName();
+                            address[i] = details.getAddress().getMunicipality();
                             i++;
                         }
-                        searchAdapter=new SearchAdapter(getContext(),name,address);
+                        searchAdapter = new SearchAdapter(getContext(), name, address);
                         listView.setAdapter(searchAdapter);
 
                     }
 
                     @Override
                     public void onError(@NotNull SearchException e) {
-                        Toast.makeText(getContext(),e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
                 return false;
