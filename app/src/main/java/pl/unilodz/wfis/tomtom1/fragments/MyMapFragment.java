@@ -85,6 +85,13 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
            }
         });
 
+        tomtomMap.addOnMarkerClickListener(new TomtomMapCallback.OnMarkerClickListener() {
+            @Override
+            public void onMarkerClick(@NonNull @NotNull Marker marker) {
+                Toast.makeText(getActivity(), "This is my Toast message!",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
