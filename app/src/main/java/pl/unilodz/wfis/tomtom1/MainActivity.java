@@ -104,5 +104,27 @@ public class MainActivity extends AppCompatActivity {
     private void setupUIViewListeners() {
     }
 
+    public MyMapFragment getMyMapFragment() {
+        return myMapFragment;
+    }
 
+    public void setMyMapFragment(MyMapFragment myMapFragment) {
+        this.myMapFragment = myMapFragment;
+    }
+
+    public FavouriteFragment getFavouriteFragment() {
+        return favouriteFragment;
+    }
+
+    public void setFavouriteFragment(FavouriteFragment favouriteFragment) {
+        this.favouriteFragment = favouriteFragment;
+    }
+
+    public SearchFragment getSearchFragment() {
+        return searchFragment;
+    }
+
+    public void setSearchFragment(SearchFragment searchFragment) {
+        this.searchFragment = searchFragment;
+    }
 }

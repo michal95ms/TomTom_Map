@@ -1,66 +1,108 @@
 package pl.unilodz.wfis.tomtom1.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
+import pl.unilodz.wfis.tomtom1.CommonsConstants;
+import pl.unilodz.wfis.tomtom1.MainActivity;
+import pl.unilodz.wfis.tomtom1.adapters.FavouriteListAdapter;
+
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.tomtom.online.sdk.common.location.LatLng;
+import com.tomtom.online.sdk.map.Icon;
+import com.tomtom.online.sdk.map.MarkerAnchor;
+import com.tomtom.online.sdk.map.MarkerBuilder;
+import com.tomtom.online.sdk.map.TomtomMap;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import pl.unilodz.wfis.tomtom1.R;
+import pl.unilodz.wfis.tomtom1.fragments.models.FavouriteLocation;
+import pl.unilodz.wfis.tomtom1.utils.ObjectSerializer;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FavouriteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class FavouriteFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String TAG = FavouriteFragment.class.getSimpleName();
+    private ListView favouriteListView;
 
     public FavouriteFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FavouriteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FavouriteFragment newInstance(String param1, String param2) {
-        FavouriteFragment fragment = new FavouriteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favourite, container, false);
+        View view = inflater.inflate(R.layout.fragment_favourite, container, false);
+        favouriteListView = view.findViewById(R.id.favourite_locations_list);
+        FavouriteListAdapter adapter = new FavouriteListAdapter(getContext(), getFavouriteLocationFromStorage());
+        favouriteListView.setAdapter(adapter);
+        favouriteListView.setClickable(true);
+        favouriteListView.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> listView, View layout, int position, long arg3) {
+                FavouriteListAdapter adapter = (FavouriteListAdapter) listView.getAdapter();
+                FavouriteLocation location = adapter.getItem(position);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                MainActivity activity = (MainActivity) getActivity();
+                MyMapFragment fragment = activity.getMyMapFragment();
+                prepareFavouriteLocationMarker(fragment.getTomtomMap(), location.getLatLng());
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        return view;
+    }
+
+    private List<FavouriteLocation> getFavouriteLocationFromStorage() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Set<String> encodedLocations = sharedPref.getStringSet(CommonsConstants.FAVOURITE_LOCATIONS_KEY, new HashSet<>());
+        Timber.d("Found encoded locations in SharedPreferences: %s", encodedLocations.size());
+        List<FavouriteLocation> locations = new ArrayList<>(encodedLocations.size());
+        for(String encoded : encodedLocations) {
+            try {
+                locations.add(ObjectSerializer.fromString(encoded));
+            } catch (IOException | ClassNotFoundException e) {
+                Timber.e(e, e.getMessage());
+            }
+        }
+        return locations;
+    }
+
+    private void prepareFavouriteLocationMarker(TomtomMap tomtomMap, LatLng latLng) {
+        tomtomMap.getMarkers().clear();
+        MarkerBuilder markerBuilder = new MarkerBuilder(latLng)
+                .icon(Icon.Factory.fromResources(getContext(), R.drawable.ic_favourites))
+                .iconAnchor(MarkerAnchor.Bottom);
+        tomtomMap.addMarker(markerBuilder);
+        tomtomMap.addMarker(markerBuilder);
     }
 }

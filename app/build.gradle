@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.tomtom.online:sdk-routing:2.4782'
     implementation 'com.tomtom.online:sdk-search:2.4782'
     implementation 'com.tomtom.online:sdk-maps-ui-extensions:2.4782'
+    implementation 'androidx.preference:preference:1.1.1'
     //library required to display map
     implementation("com.tomtom.online:sdk-maps:2.4807")
 

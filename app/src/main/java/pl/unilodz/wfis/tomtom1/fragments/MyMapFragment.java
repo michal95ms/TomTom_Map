@@ -1,23 +1,32 @@
 package pl.unilodz.wfis.tomtom1.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import pl.unilodz.wfis.tomtom1.BuildConfig;
+import pl.unilodz.wfis.tomtom1.CommonsConstants;
 import pl.unilodz.wfis.tomtom1.R;
+import pl.unilodz.wfis.tomtom1.fragments.models.FavouriteLocation;
+import pl.unilodz.wfis.tomtom1.utils.ObjectSerializer;
+import timber.log.Timber;
 
 import com.tomtom.online.sdk.common.location.LatLng;
 import com.tomtom.online.sdk.map.ApiKeyType;
-import com.tomtom.online.sdk.map.CameraPosition;
 import com.tomtom.online.sdk.map.Icon;
-import com.tomtom.online.sdk.map.MapConstants;
 import com.tomtom.online.sdk.map.MapFragment;
 import com.tomtom.online.sdk.map.MapProperties;
+import com.tomtom.online.sdk.map.Marker;
+import com.tomtom.online.sdk.map.MarkerAnchor;
+import com.tomtom.online.sdk.map.MarkerBuilder;
 import com.tomtom.online.sdk.map.OnMapReadyCallback;
 import com.tomtom.online.sdk.map.Route;
 import com.tomtom.online.sdk.map.TomtomMap;
@@ -25,30 +34,27 @@ import com.tomtom.online.sdk.map.TomtomMapCallback;
 import com.tomtom.online.sdk.routing.RoutingApi;
 import com.tomtom.online.sdk.search.SearchApi;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyMapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class MyMapFragment extends MapFragment implements OnMapReadyCallback, TomtomMapCallback.OnMapLongClickListener {
 
     private TomtomMap tomtomMap;
-    private SearchApi searchApi;
-    private RoutingApi routingApi;
-    private Route route;
-    private LatLng departurePosition;
-    private LatLng destinationPosition;
-    private LatLng wayPointPosition;
-    private Icon departureIcon;
-    private Icon destinationIcon;
     private boolean init = true;
     private boolean initLocation = true;
 
     public MyMapFragment() {
         super();
+        initTomTomServices();
     }
 
     public static MyMapFragment newInstance() {
@@ -58,18 +64,17 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(init) {
-            initTomTomServices(getContext());
-            getAsyncMap(this);
-            init = false;
-        }
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        getAsyncMap(this);
+        initLocation = true;
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -96,26 +101,46 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
 
     @Override
     public void onMapLongClick(@NonNull LatLng latLng) {
+        tomtomMap.getMarkers().clear();
+        MarkerBuilder markerBuilder = new MarkerBuilder(latLng)
+                .icon(Icon.Factory.fromResources(getContext(), R.drawable.ic_favourites))
+                .iconAnchor(MarkerAnchor.Bottom);
+        tomtomMap.addMarker(markerBuilder);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Set<String> encodedLocations = sharedPref.getStringSet(CommonsConstants.FAVOURITE_LOCATIONS_KEY, new HashSet<>());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(CommonsConstants.FAVOURITE_LOCATIONS_KEY);
+        editor.apply();
+        try {
+            encodedLocations.add(ObjectSerializer.toString(new FavouriteLocation(latLng.toString(), latLng)));
+            editor.putStringSet(CommonsConstants.FAVOURITE_LOCATIONS_KEY, encodedLocations);
+            boolean success = editor.commit();
+            if(!success) {
+                Timber.w("Unsuccessful attempt to save Favourite Locations in Shared Preferences: %s", CommonsConstants.FAVOURITE_LOCATIONS_KEY);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        tomtomMap.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
-    private void initTomTomServices(Context context) {
-        if(context == null) {
-            throw new IllegalStateException("Context cannot be null during MyMapFragment initialization!");
-        }
+    private void initTomTomServices() {
         Map<ApiKeyType, String> mapKeys = new HashMap<>();
-        mapKeys.put(ApiKeyType.MAPS_API_KEY, context.getResources().getString(R.string.MAPS_API_KEY));
+        mapKeys.put(ApiKeyType.MAPS_API_KEY, BuildConfig.MAPS_API_KEY);
         MapProperties mapProperties = new MapProperties.Builder()
                 .keys(mapKeys)
                 .build();
         setArguments(MapFragment.newInstance(mapProperties).getArguments());
     }
-    private void clearMap() {
-        tomtomMap.clear();
-        departurePosition = null;
-        destinationPosition = null;
-        route = null;
+
+    public TomtomMap getTomtomMap() {
+        return tomtomMap;
     }
 
 
