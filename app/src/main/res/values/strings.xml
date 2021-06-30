@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TomTom1</string>
+    <string name="app_name">TomTomMichal</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="geocode_no_results">No geocoder results. Choose different location and try again.</string>
     <string name="api_response_error">API response error: \'%1$s\'.</string>

@@ -7,11 +7,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -102,8 +104,15 @@ public class SearchFragment extends Fragment {
                         String address[] = new String[fuzzyOutcome.getFuzzyDetailsList().size()];
                         int i = 0;
                         for (FuzzySearchDetails details : fuzzyOutcome.getFuzzyDetailsList()) {
-                            name[i] = details.getPoi().getName();
-                            address[i] = details.getAddress().getMunicipality();
+                            if (details.getPoi().getName().isEmpty()) {
+                                name[i] = details.getAddress().getMunicipality();
+                                address[i] = details.getAddress().getStreetName() + " " + details.getAddress().getStreetNumber();
+                            } else {
+                                name[i] = details.getPoi().getName();
+                                address[i] = details.getAddress().getMunicipality() + " " + details.getAddress().getStreetName() + " " + details.getAddress().getStreetNumber();
+
+                            }
+                            //address[i] = details.getAddress().getMunicipality()+" "+details.getAddress().getStreetName()+" "+details.getAddress().getStreetNumber();
                             i++;
                         }
                         searchAdapter = new SearchAdapter(getContext(), name, address);
