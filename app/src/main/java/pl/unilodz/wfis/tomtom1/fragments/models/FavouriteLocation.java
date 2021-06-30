@@ -3,6 +3,7 @@ package pl.unilodz.wfis.tomtom1.fragments.models;
 import com.tomtom.online.sdk.common.location.LatLng;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class FavouriteLocation implements Serializable {
 
@@ -24,4 +25,17 @@ public class FavouriteLocation implements Serializable {
         return latLng;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FavouriteLocation)) return false;
+        FavouriteLocation location = (FavouriteLocation) o;
+        return Objects.equals(name, location.name) &&
+                Objects.equals(latLng, location.latLng);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, latLng);
+    }
 }

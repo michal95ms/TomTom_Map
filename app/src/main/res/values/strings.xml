@@ -5,4 +5,8 @@
     <string name="api_response_error">API response error: \'%1$s\'.</string>
     <string name="favourite_item_remove_button_text">Delete</string>
     <string name="show_all_button_text">Show all on the map</string>
+    <string name="favourite_location_popup_headline">Save favourite location</string>
+    <string name="favourite_location_popup_hint">Enter name of favourite location</string>
+    <string name="favourite_location_popup_save_button">Save</string>
+    <string name="favourite_location_popup_save_cancel">Cancel</string>
 </resources>
