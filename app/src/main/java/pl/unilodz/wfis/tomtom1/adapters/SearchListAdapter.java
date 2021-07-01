@@ -38,12 +38,12 @@ public class SearchListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return searchLocationList.size();
     }
 
     @Override
     public SearchLocation getItem(int i) {
-        if(i < 0 || i > (searchLocationList.size()-1)) {
+        if (i < 0 || i > (searchLocationList.size() - 1)) {
             return null;
         }
         return searchLocationList.get(i);
@@ -51,9 +51,10 @@ public class SearchListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        if(i < 0 || i > (searchLocationList.size()-1)) {
+        if (i < 0 || i > (searchLocationList.size() - 1)) {
             return 0;
-        };
+        }
+        ;
         return i;
     }
 
@@ -63,7 +64,7 @@ public class SearchListAdapter extends BaseAdapter {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = layoutInflater.inflate(R.layout.row, parent, false);
         TextView tvName = row.findViewById(R.id.name_search);
-        TextView tvAddress= row.findViewById(R.id.address_search);
+        TextView tvAddress = row.findViewById(R.id.address_search);
 
         tvName.setText(searchLocationList.get(position).getName());
         tvAddress.setText(searchLocationList.get(position).getAddress());

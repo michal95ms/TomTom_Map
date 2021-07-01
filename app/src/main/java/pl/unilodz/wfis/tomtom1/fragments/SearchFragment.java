@@ -1,11 +1,14 @@
 package pl.unilodz.wfis.tomtom1.fragments;
 
 
+import pl.unilodz.wfis.tomtom1.CommonsConstants;
+import pl.unilodz.wfis.tomtom1.MainActivity;
 import pl.unilodz.wfis.tomtom1.adapters.LocationProvider;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,9 +152,16 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 searchListAdapter = (SearchListAdapter) listView.getAdapter();
+               SearchLocation location = searchListAdapter.getItem(position);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                MainActivity activity = (MainActivity) getActivity();
+                MyMapFragment fragment = activity.getMyMapFragment();
+                fragment.getArguments().putSerializable(CommonsConstants.FAVOURITE_LOCATION_BUNDLE_ATTRIBUTE, location);
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
 
-
-                Toast.makeText(getContext(), "lista" + searchListAdapter.getItem(position), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "lista" + searchListAdapter.getItem(position).getAddress(), Toast.LENGTH_LONG).show();
 
             }
         });
