@@ -28,6 +28,7 @@ import com.tomtom.online.sdk.map.TomtomMapCallback;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -37,9 +38,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import pl.unilodz.wfis.tomtom1.BuildConfig;
-import pl.unilodz.wfis.tomtom1.CommonsConstants;
 import pl.unilodz.wfis.tomtom1.R;
 import pl.unilodz.wfis.tomtom1.fragments.models.FavouriteLocation;
+import pl.unilodz.wfis.tomtom1.fragments.models.INameLocation;
 import pl.unilodz.wfis.tomtom1.utils.FavouriteLocationsManager;
 
 /**
@@ -51,7 +52,7 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
     private TomtomMap tomtomMap;
     private boolean init = true;
     private boolean initLocation = true;
-    private final Stack<FavouriteLocation> favouriteLocation = new Stack<>();
+    private final Stack<List<LatLng>> locations = new Stack<>();
     private FavouriteLocationsManager favouriteLocationsManager;
 
     public MyMapFragment() {
@@ -75,10 +76,6 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
         View view = super.onCreateView(inflater, container, savedInstanceState);
         getAsyncMap(this);
         initLocation = true;
-        if(getArguments().containsKey(CommonsConstants.FAVOURITE_LOCATION_BUNDLE_ATTRIBUTE)) {
-            favouriteLocation.push((FavouriteLocation) getArguments().get(CommonsConstants.FAVOURITE_LOCATION_BUNDLE_ATTRIBUTE));
-            getArguments().remove(CommonsConstants.FAVOURITE_LOCATION_BUNDLE_ATTRIBUTE);
-        }
         return view;
     }
 
@@ -117,10 +114,12 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
         /*this.tomtomMap.addLocationUpdateListener(location -> {
            if(initLocation) {
                initLocation = false;
-               if(favouriteLocation.empty()) {
+               if(locations.empty()) {
                    tomtomMap.centerOnMyLocationWithNorthUp();
                } else {
-                   prepareFavouriteLocationMarker(tomtomMap, favouriteLocation.pop());
+                   for(LatLng latLng : locations.pop()){
+                       prepareLocationMarker(tomtomMap, latLng, ((INameLocation)latLng).getName());
+                   }
                }
            }
         });*/
@@ -162,15 +161,15 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
         setArguments(MapFragment.newInstance(mapProperties).getArguments());
     }
 
-    private void prepareFavouriteLocationMarker(TomtomMap tomtomMap, FavouriteLocation location) {
+    private void prepareLocationMarker(TomtomMap tomtomMap, LatLng location, String name) {
         tomtomMap.getMarkers().clear();
-        MarkerBuilder markerBuilder = new MarkerBuilder(location.getLatLng())
+        MarkerBuilder markerBuilder = new MarkerBuilder(location)
                 .icon(Icon.Factory.fromResources(getContext(), R.drawable.ic_favourites))
-                .markerBalloon(new SimpleMarkerBalloon(location.getName()))
+                .markerBalloon(new SimpleMarkerBalloon(name))
                 .iconAnchor(MarkerAnchor.Bottom);
         tomtomMap.addMarker(markerBuilder);
         tomtomMap.centerOn(CameraPosition.builder()
-                .focusPosition(location.getLatLng())
+                .focusPosition(location)
                 .zoom(MapConstants.DEFAULT_ZOOM_LEVEL)
                 .build());
     }
@@ -191,5 +190,7 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
         return builder.show();
     }
 
-
+    public Stack<List<LatLng>> getLocations() {
+        return locations;
+    }
 }

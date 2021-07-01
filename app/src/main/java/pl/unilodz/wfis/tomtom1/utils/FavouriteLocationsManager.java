@@ -37,7 +37,7 @@ public class FavouriteLocationsManager implements Contextable {
         editor.remove(CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY);
         editor.apply();
         try {
-            encodedLocations.add(ObjectSerializer.toString(new FavouriteLocation(location.getName(), location.getLatLng())));
+            encodedLocations.add(ObjectSerializer.toString(new FavouriteLocation(location.getName(), location)));
             editor.putStringSet(CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY, encodedLocations);
             boolean success = editor.commit();
             if(!success) {

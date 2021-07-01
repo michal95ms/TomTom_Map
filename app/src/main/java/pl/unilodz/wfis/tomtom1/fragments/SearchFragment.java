@@ -1,15 +1,7 @@
 package pl.unilodz.wfis.tomtom1.fragments;
 
 
-import pl.unilodz.wfis.tomtom1.CommonsConstants;
-import pl.unilodz.wfis.tomtom1.MainActivity;
-import pl.unilodz.wfis.tomtom1.adapters.LocationProvider;
-
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +25,15 @@ import com.tomtom.online.sdk.search.fuzzy.FuzzySearchSpecification;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import pl.unilodz.wfis.tomtom1.BuildConfig;
+import pl.unilodz.wfis.tomtom1.MainActivity;
 import pl.unilodz.wfis.tomtom1.R;
+import pl.unilodz.wfis.tomtom1.adapters.LocationProvider;
 import pl.unilodz.wfis.tomtom1.adapters.SearchListAdapter;
 import pl.unilodz.wfis.tomtom1.fragments.models.SearchLocation;
 
@@ -156,7 +153,7 @@ public class SearchFragment extends Fragment {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 MainActivity activity = (MainActivity) getActivity();
                 MyMapFragment fragment = activity.getMyMapFragment();
-                fragment.getArguments().putSerializable(CommonsConstants.FAVOURITE_LOCATION_BUNDLE_ATTRIBUTE, location);
+                fragment.getLocations().addElement(Arrays.asList(location));
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
@@ -169,8 +166,20 @@ public class SearchFragment extends Fragment {
         showAllB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "przycisk", Toast.LENGTH_LONG).show();
 
+                List locations = searchListAdapter.getSearchLocationList();
+                if (!searchListAdapter.isEmpty()){
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                MainActivity activity = (MainActivity) getActivity();
+                MyMapFragment fragment = activity.getMyMapFragment();
+                fragment.getLocations().addElement(locations);
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                }
+                else{
+                    Toast.makeText(getContext(),"pusta",Toast.LENGTH_LONG).show();
+                };
             }
         });
 

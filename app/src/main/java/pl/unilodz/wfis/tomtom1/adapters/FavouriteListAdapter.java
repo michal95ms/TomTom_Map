@@ -63,5 +63,7 @@ public class FavouriteListAdapter extends BaseAdapter {
         return view;
     }
 
-
+    public List<FavouriteLocation> getFavourites() {
+        return favourites;
+    }
 }
