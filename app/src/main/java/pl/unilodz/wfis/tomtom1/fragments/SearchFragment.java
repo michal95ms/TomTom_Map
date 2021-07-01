@@ -88,7 +88,7 @@ public class SearchFragment extends Fragment {
         searchApi = OnlineSearchApi.create(getContext(), BuildConfig.SEARCH_API_KEY);
         locationProvider = new LocationProvider(getContext());
         locationProvider.activateLocationSource();
-
+        searchListAdapter= new SearchListAdapter(getContext(),new ArrayList<>());
 
         searchView = view.findViewById(R.id.searchViewSF);
         listView = view.findViewById(R.id.search_list);

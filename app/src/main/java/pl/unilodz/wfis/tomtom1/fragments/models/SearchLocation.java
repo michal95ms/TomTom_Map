@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class SearchLocation implements Serializable {
 
-    private static final long serialVersionUID = -686314766619527677L;
+    private static final long serialVersionUID = 8730416028381281070L;
 
     private String name;
     private String address;
