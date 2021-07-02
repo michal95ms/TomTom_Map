@@ -14,8 +14,11 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:layout_toStartOf="@+id/favourite_item_remove_button"
-        android:text="TextView"
-        android:textSize="18sp" />
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:textSize="20dp"
+        android:textColor="#000"
+         />
 
     <Button
         android:id="@+id/favourite_item_remove_button"
