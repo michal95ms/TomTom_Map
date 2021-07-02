@@ -11,11 +11,6 @@ public class FavouriteLocation extends LatLng implements Serializable, INameLoca
 
     private String name;
 
-    public FavouriteLocation(String name, double lat, double lon) {
-        super(lat, lon);
-        this.name = name;
-    }
-
     public FavouriteLocation(String name, LatLng latLng) {
         super(latLng.getLatitude(), latLng.getLongitude());
         this.name = name;

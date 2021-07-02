@@ -13,6 +13,7 @@ import java.util.Set;
 
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
+
 import pl.unilodz.wfis.tomtom1.CommonsConstants;
 import pl.unilodz.wfis.tomtom1.fragments.models.FavouriteLocation;
 import timber.log.Timber;
@@ -21,6 +22,7 @@ public class FavouriteLocationsManager implements Contextable {
 
     private Context context;
     SharedPreferences sharedPreferences;
+
     public FavouriteLocationsManager(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -40,7 +42,7 @@ public class FavouriteLocationsManager implements Contextable {
             encodedLocations.add(ObjectSerializer.toString(new FavouriteLocation(location.getName(), location)));
             editor.putStringSet(CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY, encodedLocations);
             boolean success = editor.commit();
-            if(!success) {
+            if (!success) {
                 Timber.w("Unsuccessful attempt to save Favourite Locations in Shared Preferences: %s", CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY);
             }
             return success;
@@ -53,7 +55,7 @@ public class FavouriteLocationsManager implements Contextable {
     public boolean delete(FavouriteLocation location) {
         Set<String> encodedLocations = sharedPreferences.getStringSet(CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY, new HashSet<>());
         Set<FavouriteLocation> locationSet = deserializeSet(encodedLocations);
-        if(locationSet.contains(location)) {
+        if (locationSet.contains(location)) {
             locationSet.remove(location);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove(CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY);
@@ -61,7 +63,7 @@ public class FavouriteLocationsManager implements Contextable {
             encodedLocations = serializeSet(locationSet);
             editor.putStringSet(CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY, encodedLocations);
             boolean success = editor.commit();
-            if(!success) {
+            if (!success) {
                 Timber.w("Unsuccessful attempt to save Favourite Locations in Shared Preferences: %s", CommonsConstants.FAVOURITE_LOCATIONS_SHARED_PREFERENCES_KEY);
             }
             return success;
@@ -71,7 +73,7 @@ public class FavouriteLocationsManager implements Contextable {
 
     private Set<FavouriteLocation> deserializeSet(Set<String> encoded) {
         HashSet<FavouriteLocation> decoded = new HashSet<>(encoded.size());
-        for(String encode : encoded) {
+        for (String encode : encoded) {
             try {
                 decoded.add(ObjectSerializer.fromString(encode));
             } catch (IOException | ClassNotFoundException e) {
@@ -83,7 +85,7 @@ public class FavouriteLocationsManager implements Contextable {
 
     private Set<String> serializeSet(Set<FavouriteLocation> locations) {
         HashSet<String> encoded = new HashSet<>(locations.size());
-        for(FavouriteLocation location : locations) {
+        for (FavouriteLocation location : locations) {
             try {
                 encoded.add(ObjectSerializer.toString(location));
             } catch (IOException e) {

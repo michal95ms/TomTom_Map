@@ -32,7 +32,7 @@ public class FavouriteListAdapter extends BaseAdapter {
 
     @Override
     public FavouriteLocation getItem(int i) {
-        if(i < 0 || i > (favourites.size()-1)) {
+        if (i < 0 || i > (favourites.size() - 1)) {
             return null;
         }
         return favourites.get(i);
@@ -40,9 +40,10 @@ public class FavouriteListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        if(i < 0 || i > (favourites.size()-1)) {
+        if (i < 0 || i > (favourites.size() - 1)) {
             return 0;
-        };
+        }
+        ;
         return i;
     }
 
@@ -59,7 +60,6 @@ public class FavouriteListAdapter extends BaseAdapter {
             favouriteLocationsManager.delete(favouriteLocation);
             notifyDataSetChanged();
         });
-//        convertView.setOnClickListener(view1 -> Toast.makeText(context, "Click!", Toast.LENGTH_SHORT));
         return view;
     }
 

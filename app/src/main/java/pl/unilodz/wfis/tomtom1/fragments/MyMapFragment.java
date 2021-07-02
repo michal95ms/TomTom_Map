@@ -35,7 +35,6 @@ import java.util.Stack;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 
 import pl.unilodz.wfis.tomtom1.BuildConfig;
 import pl.unilodz.wfis.tomtom1.R;
@@ -43,10 +42,6 @@ import pl.unilodz.wfis.tomtom1.fragments.models.FavouriteLocation;
 import pl.unilodz.wfis.tomtom1.fragments.models.INameLocation;
 import pl.unilodz.wfis.tomtom1.utils.FavouriteLocationsManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
- */
 public class MyMapFragment extends MapFragment implements OnMapReadyCallback, TomtomMapCallback.OnMapLongClickListener {
 
     private TomtomMap tomtomMap;
@@ -108,31 +103,15 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
         tomtomMap.addOnMarkerClickListener(new TomtomMapCallback.OnMarkerClickListener() {
             @Override
             public void onMarkerClick(@NonNull @NotNull Marker marker) {
-                Toast.makeText(getContext(),"marker",Toast.LENGTH_LONG).show();
             }
         });
-        /*this.tomtomMap.addLocationUpdateListener(location -> {
-           if(initLocation) {
-               initLocation = false;
-               if(locations.empty()) {
-                   tomtomMap.centerOnMyLocationWithNorthUp();
-               } else {
-                   for(LatLng latLng : locations.pop()){
-                       prepareLocationMarker(tomtomMap, latLng, ((INameLocation)latLng).getName());
-                   }
-               }
-           }
-        });*/
 
         tomtomMap.addOnMarkerClickListener(new TomtomMapCallback.OnMarkerClickListener() {
             @Override
             public void onMarkerClick(@NonNull @NotNull Marker marker) {
-                Toast.makeText(getActivity(), "This is my Toast message!",
-                        Toast.LENGTH_LONG).show();
             }
         });
     }
-
 
     @Override
     public void onMapLongClick(@NonNull LatLng latLng) {
@@ -142,8 +121,6 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
                 .iconAnchor(MarkerAnchor.Bottom);
         tomtomMap.addMarker(markerBuilder);
         createFavouriteLocationPopup(latLng);
-
-
     }
 
     @Override
@@ -183,7 +160,7 @@ public class MyMapFragment extends MapFragment implements OnMapReadyCallback, To
                 .setPositiveButton(R.string.favourite_location_popup_save_button, (dialog, id) -> {
                     FavouriteLocation favouriteLocation = new FavouriteLocation(input.getText().toString(), latLng);
                     if (!favouriteLocationsManager.save(favouriteLocation)) {
-                        Toast.makeText(getContext(), "Nie udalo sie zapisac lokalizacji", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.mymapfragment_save_error, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.favourite_location_popup_save_cancel, (dialog, id) -> dialog.cancel());

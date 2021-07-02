@@ -11,14 +11,13 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import pl.unilodz.wfis.tomtom1.R;
 import pl.unilodz.wfis.tomtom1.fragments.models.SearchLocation;
 
 public class SearchListAdapter extends BaseAdapter {
 
     Context context;
-    //String name[];
-    //String address[];
 
     private final List<SearchLocation> searchLocationList;
 
@@ -26,13 +25,6 @@ public class SearchListAdapter extends BaseAdapter {
         this.context = context;
         this.searchLocationList = searchLocationList;
     }
-/*
-    public SearchListAdapter(Context c, String n[], String a[]) {
-        super(c, R.layout.row, R.id.name_search, n);
-        this.context = c;
-        this.name = n;
-        this.address = a;
-    }*/
 
     @Override
     public int getCount() {
@@ -52,7 +44,6 @@ public class SearchListAdapter extends BaseAdapter {
         if (i < 0 || i > (searchLocationList.size() - 1)) {
             return 0;
         }
-        ;
         return i;
     }
 
@@ -70,8 +61,6 @@ public class SearchListAdapter extends BaseAdapter {
 
         tvName.setText(searchLocationList.get(position).getName());
         tvAddress.setText(searchLocationList.get(position).getAddress());
-        //tvName.setText(name[position]);
-        //tvAddress.setText(address[position]);
 
         return row;
     }

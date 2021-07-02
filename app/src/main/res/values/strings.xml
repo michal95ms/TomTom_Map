@@ -9,4 +9,7 @@
     <string name="favourite_location_popup_hint">Enter name of favourite location</string>
     <string name="favourite_location_popup_save_button">Save</string>
     <string name="favourite_location_popup_save_cancel">Cancel</string>
+    <string name="mymapfragment_save_error">Location could not be saved</string>s
+    <string name="search_location_nothing_to_show">There are no objects to display</string>
+    <string name="favourite_location_nothing_to_show">Favorite places list is empty</string>
 </resources>

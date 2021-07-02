@@ -18,11 +18,10 @@ import pl.unilodz.wfis.tomtom1.fragments.SearchFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    MyMapFragment myMapFragment;
-    FavouriteFragment favouriteFragment;
-    SearchFragment searchFragment;
-    LocationProvider locationProvider;
-
+    private MyMapFragment myMapFragment;
+    private FavouriteFragment favouriteFragment;
+    private SearchFragment searchFragment;
+    private LocationProvider locationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         initUIViews();
         setupUIViewListeners();
 
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.top_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
@@ -43,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new MyMapFragment()).commit();
         }
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -54,18 +51,12 @@ public class MainActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.ic_map:
                             selectedFragment = myMapFragment;
-                            Toast.makeText(getBaseContext(), "Mapa",
-                                    Toast.LENGTH_LONG).show();
                             break;
                         case R.id.ic_favourite:
                             selectedFragment = favouriteFragment;
-                            Toast.makeText(getBaseContext(), "Favourite",
-                                    Toast.LENGTH_LONG).show();
                             break;
                         case R.id.ic_search:
                             selectedFragment = searchFragment;
-                            Toast.makeText(getBaseContext(), "Search",
-                                    Toast.LENGTH_LONG).show();
                             break;
                         case R.id.ic_share:
                             selectedFragment = myMapFragment;
@@ -78,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                             shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
                             shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                             startActivity(Intent.createChooser(shareIntent, "Share my location"));
-
                             break;
                     }
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -86,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             };
-
 
     private void initMyMapFragment() {
         myMapFragment = MyMapFragment.newInstance();
